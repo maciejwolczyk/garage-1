@@ -43,6 +43,8 @@ RUN \
     python3.5-dev \
     python3.5-tk \
     python3.5-venv && \
+    # ruby
+    ruby-full \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
 
