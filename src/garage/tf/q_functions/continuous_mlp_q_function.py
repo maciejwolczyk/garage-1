@@ -96,7 +96,7 @@ class ContinuousMLPQFunction(QFunction):
 
         with tf.compat.v1.variable_scope(self.name) as vs:
             self._variable_scope = vs
-            self._network = self.model.build(obs_ph, action_ph)
+            self._network = self.model.build_network(obs_ph, action_ph)
 
         self._f_qval = tf.compat.v1.get_default_session().make_callable(
             self._network.outputs, feed_list=[obs_ph, action_ph])
@@ -139,8 +139,9 @@ class ContinuousMLPQFunction(QFunction):
 
         """
         with tf.compat.v1.variable_scope(self._variable_scope):
-            return self.model.build(state_input, action_input,
-                                    name=name).outputs
+            return self.model.build_network(state_input,
+                                            action_input,
+                                            name=name).outputs
 
     def clone(self, name):
         """Return a clone of the Q-function.

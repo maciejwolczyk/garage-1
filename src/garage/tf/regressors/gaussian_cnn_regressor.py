@@ -186,7 +186,7 @@ class GaussianCNNRegressor(StochasticRegressor):
                                              self._input_shape)
 
         with tf.compat.v1.variable_scope(self._variable_scope):
-            self._network = self.model.build(input_var)
+            self._network = self.model.build_network(input_var)
             ys_var = tf.compat.v1.placeholder(dtype=tf.float32,
                                               name='ys',
                                               shape=(None, self._output_dim))
@@ -336,7 +336,7 @@ class GaussianCNNRegressor(StochasticRegressor):
         """
         del state_info_vars
         with tf.compat.v1.variable_scope(self._variable_scope):
-            network = self.model.build(input_var, name=name)
+            network = self.model.build_network(input_var, name=name)
 
         means_var = network.means
         log_stds_var = network.log_stds

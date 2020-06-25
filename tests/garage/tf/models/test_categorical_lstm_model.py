@@ -37,8 +37,8 @@ class TestCategoricalLSTMModel(TfGraphTestCase):
         step_cell_var = tf.compat.v1.placeholder(shape=(self.batch_size, 1),
                                                  name='step_cell',
                                                  dtype=tf.float32)
-        dist = model.build(self._input_var, self._step_input_var,
-                           step_hidden_var, step_cell_var).dist
+        dist = model.build_network(self._input_var, self._step_input_var,
+                                   step_hidden_var, step_cell_var).dist
         assert isinstance(dist, tfp.distributions.OneHotCategorical)
 
     def test_output_nonlinearity(self):
@@ -50,8 +50,8 @@ class TestCategoricalLSTMModel(TfGraphTestCase):
         step_hidden_ph = tf.compat.v1.placeholder(tf.float32, shape=(None, 4))
         step_cell_ph = tf.compat.v1.placeholder(tf.float32, shape=(None, 4))
         obs = np.ones((1, 1, 1))
-        dist = model.build(obs_ph, step_obs_ph, step_hidden_ph,
-                           step_cell_ph).dist
+        dist = model.build_network(obs_ph, step_obs_ph, step_hidden_ph,
+                                   step_cell_ph).dist
         probs = tf.compat.v1.get_default_session().run(dist.probs,
                                                        feed_dict={obs_ph: obs})
         assert probs == [0.5]
@@ -66,8 +66,8 @@ class TestCategoricalLSTMModel(TfGraphTestCase):
         step_hidden_ph = tf.compat.v1.placeholder(tf.float32, shape=(None, 4))
         step_cell_ph = tf.compat.v1.placeholder(tf.float32, shape=(None, 4))
         obs = np.ones((1, 1, output_dim))
-        dist = model.build(obs_ph, step_obs_ph, step_hidden_ph,
-                           step_cell_ph).dist
+        dist = model.build_network(obs_ph, step_obs_ph, step_hidden_ph,
+                                   step_cell_ph).dist
         probs = tf.compat.v1.get_default_session().run(tf.reduce_sum(
             dist.probs),
                                                        feed_dict={obs_ph: obs})
@@ -81,8 +81,8 @@ class TestCategoricalLSTMModel(TfGraphTestCase):
         step_cell_var = tf.compat.v1.placeholder(shape=(self.batch_size, 1),
                                                  name='step_cell',
                                                  dtype=tf.float32)
-        network = model.build(self._input_var, self._step_input_var,
-                              step_hidden_var, step_cell_var)
+        network = model.build_network(self._input_var, self._step_input_var,
+                                      step_hidden_var, step_cell_var)
         dist = network.dist
         # assign bias to all one
         with tf.compat.v1.variable_scope('CategoricalLSTMModel/lstm',
@@ -123,8 +123,9 @@ class TestCategoricalLSTMModel(TfGraphTestCase):
                                                      name='initial_cell',
                                                      dtype=tf.float32)
 
-            network2 = model_pickled.build(input_var, step_input_var,
-                                           step_hidden_var, step_cell_var)
+            network2 = model_pickled.build_network(input_var, step_input_var,
+                                                   step_hidden_var,
+                                                   step_cell_var)
             dist2 = network2.dist
             outputs2 = sess.run(dist2.probs,
                                 feed_dict={input_var: self.obs_inputs})

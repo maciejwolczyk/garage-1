@@ -31,7 +31,7 @@ class SimpleQFunction(QFunction):
 
         with tf.compat.v1.variable_scope(self.name, reuse=False) as vs:
             self._variable_scope = vs
-            self._q_val = self.model.build(obs_ph).outputs
+            self._q_val = self.model.build_network(obs_ph).outputs
 
     @property
     def q_vals(self):

@@ -102,7 +102,7 @@ class DiscreteMLPQFunction(QFunction):
 
         with tf.compat.v1.variable_scope(self.name) as vs:
             self._variable_scope = vs
-            self._network = self.model.build(obs_ph)
+            self._network = self.model.build_network(obs_ph)
 
     @property
     def q_vals(self):
@@ -137,7 +137,7 @@ class DiscreteMLPQFunction(QFunction):
 
         """
         with tf.compat.v1.variable_scope(self._variable_scope):
-            return self.model.build(state_input, name=name).outputs
+            return self.model.build_network(state_input, name=name).outputs
 
     def clone(self, name):
         """Return a clone of the Q-function.

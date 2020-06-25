@@ -59,7 +59,7 @@ class MLPDuelingModel(Model):
         self._layer_normalization = layer_normalization
 
     # pylint: disable=arguments-differ
-    def _build(self, state_input, name=None):
+    def _build_model(self, state_input, name=None):
         """Build model given input placeholder(s).
 
         Args:

@@ -114,8 +114,11 @@ class GRUModel(Model):
         return ['all_output', 'step_output', 'step_hidden', 'init_hidden']
 
     # pylint: disable=arguments-differ
-    def _build(self, all_input_var, step_input_var, step_hidden_var,
-               name=None):
+    def _build_model(self,
+                     all_input_var,
+                     step_input_var,
+                     step_hidden_var,
+                     name=None):
         """Build model given input placeholder(s).
 
         Args:

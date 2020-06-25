@@ -59,7 +59,7 @@ class CNNModelWithMaxPooling(Model):
         self._hidden_b_init = hidden_b_init
 
     # pylint: disable=arguments-differ
-    def _build(self, state_input, name=None):
+    def _build_model(self, state_input, name=None):
         """Build model given input placeholder(s).
 
         Args:

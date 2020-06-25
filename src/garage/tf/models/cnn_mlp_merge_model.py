@@ -138,7 +138,7 @@ class CNNMLPMergeModel(Model):
         return ['state', 'action']
 
     # pylint: disable=arguments-differ
-    def _build(self, state, action, name=None):
+    def _build_model(self, state, action, name=None):
         """Build the model and return the outputs.
 
         This builds the model such that the output of the CNN is fed
@@ -157,7 +157,8 @@ class CNNMLPMergeModel(Model):
             tf.Tensor: Output of the model of shape (N, output_dim).
 
         """
-        cnn_out = self.cnn_model.build(state, name=name).outputs
-        mlp_out = self.mlp_merge_model.build(cnn_out, action,
-                                             name=name).outputs
+        cnn_out = self.cnn_model.build_network(state, name=name).outputs
+        mlp_out = self.mlp_merge_model.build_network(cnn_out,
+                                                     action,
+                                                     name=name).outputs
         return mlp_out

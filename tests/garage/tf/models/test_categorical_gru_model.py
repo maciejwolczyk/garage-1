@@ -34,8 +34,8 @@ class TestCategoricalGRUModel(TfGraphTestCase):
         step_hidden_var = tf.compat.v1.placeholder(shape=(self.batch_size, 1),
                                                    name='step_hidden',
                                                    dtype=tf.float32)
-        dist = model.build(self.input_var, self.step_input_var,
-                           step_hidden_var).dist
+        dist = model.build_network(self.input_var, self.step_input_var,
+                                   step_hidden_var).dist
         assert isinstance(dist, tfp.distributions.OneHotCategorical)
 
     def test_output_nonlinearity(self):
@@ -46,7 +46,7 @@ class TestCategoricalGRUModel(TfGraphTestCase):
         step_obs_ph = tf.compat.v1.placeholder(tf.float32, shape=(None, 1))
         step_hidden_ph = tf.compat.v1.placeholder(tf.float32, shape=(None, 4))
         obs = np.ones((1, 1, 1))
-        dist = model.build(obs_ph, step_obs_ph, step_hidden_ph).dist
+        dist = model.build_network(obs_ph, step_obs_ph, step_hidden_ph).dist
         probs = tf.compat.v1.get_default_session().run(dist.probs,
                                                        feed_dict={obs_ph: obs})
         assert probs == [0.5]
@@ -60,7 +60,7 @@ class TestCategoricalGRUModel(TfGraphTestCase):
                                                shape=(None, output_dim))
         step_hidden_ph = tf.compat.v1.placeholder(tf.float32, shape=(None, 4))
         obs = np.ones((1, 1, output_dim))
-        dist = model.build(obs_ph, step_obs_ph, step_hidden_ph).dist
+        dist = model.build_network(obs_ph, step_obs_ph, step_hidden_ph).dist
         probs = tf.compat.v1.get_default_session().run(tf.reduce_sum(
             dist.probs),
                                                        feed_dict={obs_ph: obs})
@@ -71,8 +71,8 @@ class TestCategoricalGRUModel(TfGraphTestCase):
         step_hidden_var = tf.compat.v1.placeholder(shape=(self.batch_size, 1),
                                                    name='step_hidden',
                                                    dtype=tf.float32)
-        network = model.build(self.input_var, self.step_input_var,
-                              step_hidden_var)
+        network = model.build_network(self.input_var, self.step_input_var,
+                                      step_hidden_var)
         dist = network.dist
         # assign bias to all one
         with tf.compat.v1.variable_scope('CategoricalGRUModel/gru',
@@ -109,8 +109,8 @@ class TestCategoricalGRUModel(TfGraphTestCase):
                                                        name='initial_hidden',
                                                        dtype=tf.float32)
 
-            network2 = model_pickled.build(input_var, step_input_var,
-                                           step_hidden_var)
+            network2 = model_pickled.build_network(input_var, step_input_var,
+                                                   step_hidden_var)
             dist2 = network2.dist
             outputs2 = sess.run(dist2.probs,
                                 feed_dict={input_var: self.obs_inputs})

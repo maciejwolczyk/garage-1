@@ -133,12 +133,12 @@ class LSTMModel(Model):
         ]
 
     # pylint: disable=arguments-differ
-    def _build(self,
-               all_input_var,
-               step_input_var,
-               step_hidden_var,
-               step_cell_var,
-               name=None):
+    def _build_model(self,
+                     all_input_var,
+                     step_input_var,
+                     step_hidden_var,
+                     step_cell_var,
+                     name=None):
         """Build model given input placeholder(s).
 
         Args:

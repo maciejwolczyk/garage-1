@@ -123,7 +123,7 @@ class BernoulliMLPRegressor(StochasticRegressor):
                                              self._input_shape)
 
         with tf.compat.v1.variable_scope(self._variable_scope):
-            self._network = self.model.build(input_var)
+            self._network = self.model.build_network(input_var)
 
             ys_var = tf.compat.v1.placeholder(dtype=tf.float32,
                                               name='ys',
@@ -243,7 +243,7 @@ class BernoulliMLPRegressor(StochasticRegressor):
 
         """
         with tf.compat.v1.variable_scope(self._variable_scope):
-            prob, _, _ = self.model.build(x_var, name=name).outputs
+            prob, _, _ = self.model.build_network(x_var, name=name).outputs
 
         return self._dist.log_likelihood_sym(y_var, dict(p=prob))
 
@@ -264,7 +264,7 @@ class BernoulliMLPRegressor(StochasticRegressor):
 
         """
         with tf.compat.v1.variable_scope(self._variable_scope):
-            prob, _, _ = self.model.build(input_var, name=name).outputs
+            prob, _, _ = self.model.build_network(input_var, name=name).outputs
 
         return dict(prob=prob)
 

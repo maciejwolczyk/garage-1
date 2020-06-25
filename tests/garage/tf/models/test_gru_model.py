@@ -44,8 +44,8 @@ class TestGRUModel(TfGraphTestCase):
                                                    name='step_hidden',
                                                    dtype=tf.float32)
 
-        outputs = model.build(self.input_var, self.step_input_var,
-                              step_hidden_var).outputs
+        outputs = model.build_network(self.input_var, self.step_input_var,
+                                      step_hidden_var).outputs
         output = self.sess.run(outputs[0],
                                feed_dict={self.input_var: self.obs_inputs})
         expected_output = np.full(
@@ -57,8 +57,8 @@ class TestGRUModel(TfGraphTestCase):
         step_hidden_var = tf.compat.v1.placeholder(shape=(self.batch_size, 1),
                                                    name='step_hidden',
                                                    dtype=tf.float32)
-        network = model.build(self.input_var, self.step_input_var,
-                              step_hidden_var)
+        network = model.build_network(self.input_var, self.step_input_var,
+                                      step_hidden_var)
 
         # assign bias to all one
         with tf.compat.v1.variable_scope('GRUModel/gru', reuse=True):
@@ -94,8 +94,8 @@ class TestGRUModel(TfGraphTestCase):
                                                        name='initial_hidden',
                                                        dtype=tf.float32)
 
-            network2 = model_pickled.build(input_var, step_input_var,
-                                           step_hidden_var)
+            network2 = model_pickled.build_network(input_var, step_input_var,
+                                                   step_hidden_var)
             outputs2 = sess.run(network2.all_output,
                                 feed_dict={input_var: self.obs_inputs})
             output2 = sess.run(

@@ -33,7 +33,7 @@ class TestMLPModel(TfGraphTestCase):
                          hidden_nonlinearity=None,
                          hidden_w_init=tf.ones_initializer(),
                          output_w_init=tf.ones_initializer())
-        outputs = model.build(self.input_var).outputs
+        outputs = model.build_network(self.input_var).outputs
         output = self.sess.run(outputs, feed_dict={self.input_var: self.obs})
 
         expected_output = np.full([1, output_dim], 5 * np.prod(hidden_sizes))
@@ -56,7 +56,7 @@ class TestMLPModel(TfGraphTestCase):
                                 hidden_nonlinearity=None,
                                 hidden_w_init=tf.ones_initializer(),
                                 output_w_init=tf.ones_initializer())
-        outputs = model.build(self.input_var).outputs
+        outputs = model.build_network(self.input_var).outputs
         output = self.sess.run(outputs, feed_dict={self.input_var: self.obs})
 
         expected_output = np.full([1, output_dim], 5 * np.prod(hidden_sizes))
@@ -84,7 +84,7 @@ class TestMLPModel(TfGraphTestCase):
         input_var2 = tf.compat.v1.placeholder(tf.float32, shape=(None, 5))
         obs2 = np.ones((1, 5))
 
-        outputs = model.build(self.input_var, input_var2).outputs
+        outputs = model.build_network(self.input_var, input_var2).outputs
         output = self.sess.run(outputs,
                                feed_dict={
                                    self.input_var: self.obs,
@@ -110,7 +110,7 @@ class TestMLPModel(TfGraphTestCase):
                          hidden_nonlinearity=None,
                          hidden_w_init=tf.ones_initializer(),
                          output_w_init=tf.ones_initializer())
-        outputs = model.build(self.input_var).outputs
+        outputs = model.build_network(self.input_var).outputs
 
         # assign bias to all one
         with tf.compat.v1.variable_scope('MLPModel/mlp', reuse=True):
@@ -124,7 +124,7 @@ class TestMLPModel(TfGraphTestCase):
         with tf.compat.v1.Session(graph=tf.Graph()) as sess:
             input_var = tf.compat.v1.placeholder(tf.float32, shape=(None, 5))
             model_pickled = pickle.loads(h)
-            outputs = model_pickled.build(input_var).outputs
+            outputs = model_pickled.build_network(input_var).outputs
             output2 = sess.run(outputs, feed_dict={input_var: self.obs})
 
             assert np.array_equal(output1, output2)

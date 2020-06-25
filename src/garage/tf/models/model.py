@@ -13,8 +13,8 @@ class BaseModel(abc.ABC):
 
     A Model contains the structure/configuration of a set of computation
     graphs, or can be understood as a set of networks. Using a model
-    requires calling `build()` with given input placeholder, which can be
-    either tf.compat.v1.placeholder, or the output from another model. This
+    requires calling `build_network()` with given input placeholder, which can
+    be either tf.compat.v1.placeholder, or the output from another model. This
     makes composition of complex models with simple models much easier.
 
     Examples:
@@ -24,21 +24,21 @@ class BaseModel(abc.ABC):
         input_ph = tf.compat.v1.placeholder(tf.float32, shape=(None, 2))
 
         # Building the model
-        output = model.build(input_ph)
+        output = model.build_network(input_ph)
 
         # We can also pass the output of a model to another model.
         # Here we pass the output from the above SimpleModel object.
         model_2 = ComplexModel(output_dim=2)
-        output_2 = model_2.build(output)
+        output_2 = model_2.build_network(output)
 
     """
 
-    def build(self, *inputs, name=None):
+    def build_network(self, *inputs, name=None):
         """Output of model with the given input placeholder(s).
 
         This function is implemented by subclasses to create their computation
         graphs, which will be managed by Model. Generally, subclasses should
-        implement `build()` directly.
+        implement `build_network()` directly.
 
         Args:
             inputs (object): Input(s) for the model.
@@ -189,7 +189,7 @@ class Model(BaseModel, Module):
         self._variable_scope = None
 
     # pylint: disable=protected-access, assignment-from-no-return
-    def _build_network(self, *inputs, name=None):
+    def build_network(self, *inputs, name=None):
         """Build a Network with the given input(s).
 
         ***

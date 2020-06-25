@@ -156,7 +156,8 @@ class ContinuousCNNQFunction(QFunction):
             augmented_obs_ph = obs_ph
         with tf.compat.v1.variable_scope(self.name) as vs:
             self._variable_scope = vs
-            outputs = self.model.build(augmented_obs_ph, action_ph).outputs
+            outputs = self.model.build_network(augmented_obs_ph,
+                                               action_ph).outputs
         self._f_qval = tf.compat.v1.get_default_session().make_callable(
             outputs, feed_list=[obs_ph, action_ph])
 
@@ -212,9 +213,9 @@ class ContinuousCNNQFunction(QFunction):
             if isinstance(self._env_spec.observation_space, akro.Image):
                 augmented_state_input = tf.cast(state_input,
                                                 tf.float32) / 255.0
-            return self.model.build(augmented_state_input,
-                                    action_input,
-                                    name=name).outputs
+            return self.model.build_network(augmented_state_input,
+                                            action_input,
+                                            name=name).outputs
 
     def clone(self, name):
         """Return a clone of the Q-function.

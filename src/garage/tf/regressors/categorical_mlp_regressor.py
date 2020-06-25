@@ -128,10 +128,10 @@ class CategoricalMLPRegressor(StochasticRegressor):
         input_var = tf.compat.v1.placeholder(tf.float32,
                                              shape=(None, ) +
                                              self._input_shape)
-        self._old_network = self._old_model.build(input_var)
+        self._old_network = self._old_model.build_network(input_var)
 
         with tf.compat.v1.variable_scope(self._variable_scope):
-            self._network = self.model.build(input_var)
+            self._network = self.model.build_network(input_var)
             self._old_model.parameters = self.model.parameters
 
             ys_var = tf.compat.v1.placeholder(dtype=tf.float32,

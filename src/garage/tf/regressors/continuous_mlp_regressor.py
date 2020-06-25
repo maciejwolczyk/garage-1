@@ -95,7 +95,7 @@ class ContinuousMLPRegressor(Regressor):
 
         with tf.compat.v1.variable_scope(self._name) as vs:
             self._variable_scope = vs
-            self._network = self.model.build(input_var)
+            self._network = self.model.build_network(input_var)
             ys_var = tf.compat.v1.placeholder(dtype=tf.float32,
                                               name='ys',
                                               shape=(None, self._output_dim))
@@ -160,7 +160,7 @@ class ContinuousMLPRegressor(Regressor):
 
         """
         with tf.compat.v1.variable_scope(self._variable_scope):
-            y_hat, _, _ = self.model.build(xs, name=name).outputs
+            y_hat, _, _ = self.model.build_network(xs, name=name).outputs
 
         return y_hat
 

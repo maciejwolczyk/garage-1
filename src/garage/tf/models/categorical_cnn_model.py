@@ -98,7 +98,7 @@ class CategoricalCNNModel(Model):
         return self._mlp_model.network_output_spec()
 
     # pylint: disable=arguments-differ
-    def _build(self, state_input, name=None):
+    def _build_model(self, state_input, name=None):
         """Build model.
 
         Args:
@@ -114,8 +114,9 @@ class CategoricalCNNModel(Model):
         time_dim = tf.shape(state_input)[1]
         dim = state_input.get_shape()[2:].as_list()
         state_input = tf.reshape(state_input, [-1, *dim])
-        cnn_output = self._cnn_model.build(state_input, name=name).outputs
+        cnn_output = self._cnn_model.build_network(state_input,
+                                                   name=name).outputs
         dim = cnn_output.get_shape()[-1]
         cnn_output = tf.reshape(cnn_output, [-1, time_dim, dim])
-        mlp_output = self._mlp_model.build(cnn_output, name=name).dist
+        mlp_output = self._mlp_model.build_network(cnn_output, name=name).dist
         return mlp_output

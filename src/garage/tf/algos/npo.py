@@ -20,7 +20,6 @@ from garage.tf.misc.tensor_utils import flatten_inputs
 from garage.tf.misc.tensor_utils import graph_inputs
 from garage.tf.misc.tensor_utils import positive_advs
 from garage.tf.optimizers import LbfgsOptimizer
-from garage.tf.samplers import BatchSampler
 
 
 class NPO(RLAlgorithm):
@@ -123,7 +122,7 @@ class NPO(RLAlgorithm):
         self._name = name
         self._name_scope = tf.name_scope(self._name)
         self._old_policy = policy.clone('old_policy')
-        self._old_policy.model.parameters = policy.model.parameters
+        self._old_policy.parameters = policy.parameters
         self._use_softplus_entropy = use_softplus_entropy
         self._use_neg_logli_entropy = use_neg_logli_entropy
         self._stop_entropy_gradient = stop_entropy_gradient
@@ -154,10 +153,7 @@ class NPO(RLAlgorithm):
         self._old_policy_network = None
 
         self._episode_reward_mean = collections.deque(maxlen=100)
-        if policy.vectorized:
-            self.sampler_cls = OnPolicyVectorizedSampler
-        else:
-            self.sampler_cls = BatchSampler
+        self.sampler_cls = OnPolicyVectorizedSampler
 
         self.init_opt()
 
@@ -296,7 +292,7 @@ class NPO(RLAlgorithm):
                                                    samples_data['valids'])
 
         tabular.record('{}/ExplainedVariance'.format(self._baseline.name), ev)
-        self._old_policy.model.parameters = self.policy.model.parameters
+        self._old_policy.parameters = self.policy.parameters
 
     def _build_inputs(self):
         """Build input variables.

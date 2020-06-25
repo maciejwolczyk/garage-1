@@ -82,7 +82,7 @@ class MLPMergeModel(Model):
         return ['input_var1', 'input_var2']
 
     # pylint: disable=arguments-differ
-    def _build(self, state_input, action_input, name=None):
+    def _build_model(self, state_input, action_input, name=None):
         """Build model given input placeholder(s).
 
         Args:

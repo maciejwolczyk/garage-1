@@ -73,7 +73,7 @@ class NormalizedInputMLPModel(MLPModel):
         """
         return ['y_hat', 'x_mean', 'x_std']
 
-    def _build(self, state_input, name=None):
+    def _build_model(self, state_input, name=None):
         """Build model given input placeholder(s).
 
         Args:
@@ -102,6 +102,6 @@ class NormalizedInputMLPModel(MLPModel):
 
         normalized_xs_var = (state_input - x_mean_var) / x_std_var
 
-        y_hat = super()._build(normalized_xs_var)
+        y_hat = super()._build_model(normalized_xs_var)
 
         return y_hat, x_mean_var, x_std_var

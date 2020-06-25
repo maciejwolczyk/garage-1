@@ -166,12 +166,12 @@ class GaussianLSTMModel(Model):
         ]
 
     # pylint: disable=arguments-differ
-    def _build(self,
-               state_input,
-               step_input,
-               step_hidden,
-               step_cell,
-               name=None):
+    def _build_model(self,
+                     state_input,
+                     step_input,
+                     step_hidden,
+                     step_cell,
+                     name=None):
         """Build model.
 
         Args:

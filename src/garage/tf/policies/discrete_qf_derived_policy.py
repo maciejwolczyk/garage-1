@@ -20,27 +20,16 @@ class DiscreteQfDerivedPolicy(Policy):
     """
 
     def __init__(self, env_spec, qf, name='DiscreteQfDerivedPolicy'):
-        super().__init__(name, env_spec)
-
         assert isinstance(env_spec.action_space, akro.Discrete)
         self._env_spec = env_spec
         self._qf = qf
+        self._name = name
 
         self._initialize()
 
     def _initialize(self):
         self._f_qval = tf.compat.v1.get_default_session().make_callable(
             self._qf.q_vals, feed_list=[self._qf.model.input])
-
-    @property
-    def vectorized(self):
-        """Vectorized or not.
-
-        Returns:
-            Bool: True if primitive supports vectorized operations.
-
-        """
-        return True
 
     def get_action(self, observation):
         """Get action from this policy for the input observation.

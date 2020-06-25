@@ -109,12 +109,12 @@ class CategoricalLSTMModel(LSTMModel):
         ]
 
     # pylint: disable=arguments-differ
-    def _build(self,
-               state_input,
-               step_input,
-               step_hidden,
-               step_cell,
-               name=None):
+    def _build_model(self,
+                     state_input,
+                     step_input,
+                     step_hidden,
+                     step_cell,
+                     name=None):
         """Build model.
 
         Args:
@@ -142,11 +142,11 @@ class CategoricalLSTMModel(LSTMModel):
 
         """
         (outputs, step_output, step_hidden, step_cell, init_hidden,
-         init_cell) = super()._build(state_input,
-                                     step_input,
-                                     step_hidden,
-                                     step_cell,
-                                     name=name)
+         init_cell) = super()._build_model(state_input,
+                                           step_input,
+                                           step_hidden,
+                                           step_cell,
+                                           name=name)
         if self._output_normalization_fn:
             outputs = self._output_normalization_fn(outputs)
         dist = tfp.distributions.OneHotCategorical(probs=outputs)

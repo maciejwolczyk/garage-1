@@ -42,7 +42,7 @@ class TestCNNModel(TfGraphTestCase):
                          hidden_w_init=tf.constant_initializer(1),
                          hidden_nonlinearity=None)
 
-        outputs = model.build(self._input_ph).outputs
+        outputs = model.build_network(self._input_ph).outputs
         output = self.sess.run(outputs,
                                feed_dict={self._input_ph: self.obs_input})
 
@@ -92,7 +92,7 @@ class TestCNNModel(TfGraphTestCase):
             hidden_w_init=tf.constant_initializer(1),
             hidden_nonlinearity=None)
 
-        outputs = model.build(self._input_ph).outputs
+        outputs = model.build_network(self._input_ph).outputs
         output = self.sess.run(outputs,
                                feed_dict={self._input_ph: self.obs_input})
 
@@ -137,7 +137,7 @@ class TestCNNModel(TfGraphTestCase):
                          padding='VALID',
                          hidden_w_init=tf.constant_initializer(1),
                          hidden_nonlinearity=None)
-        outputs = model.build(self._input_ph).outputs
+        outputs = model.build_network(self._input_ph).outputs
         with tf.compat.v1.variable_scope('cnn_model/cnn/h0', reuse=True):
             bias = tf.compat.v1.get_variable('bias')
         bias.load(tf.ones_like(bias).eval())
@@ -152,7 +152,7 @@ class TestCNNModel(TfGraphTestCase):
             input_ph = tf.compat.v1.placeholder(tf.float32,
                                                 shape=(None, ) + input_shape,
                                                 name='input')
-            outputs = model_pickled.build(input_ph).outputs
+            outputs = model_pickled.build_network(input_ph).outputs
             output2 = sess.run(outputs, feed_dict={input_ph: self.obs_input})
 
             assert np.array_equal(output1, output2)

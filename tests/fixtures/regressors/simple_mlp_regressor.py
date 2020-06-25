@@ -34,7 +34,7 @@ class SimpleMLPRegressor(Regressor):
                                             shape=(None, ) + self._input_shape)
         with tf.compat.v1.variable_scope(self._name) as vs:
             self._variable_scope = vs
-            self._network = self.model.build(input_ph)
+            self._network = self.model.build_network(input_ph)
 
     @property
     def recurrent(self):

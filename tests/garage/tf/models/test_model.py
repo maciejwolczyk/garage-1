@@ -20,7 +20,7 @@ class SimpleModel(Model):
         return ['state', 'action']
 
     # pylint: disable=arguments-differ
-    def _build(self, obs_input, name=None):
+    def _build_model(self, obs_input, name=None):
         del name
         state = mlp(obs_input, self._output_dim, self._hidden_sizes, 'state')
         action = mlp(obs_input, self._output_dim, self._hidden_sizes, 'action')
@@ -36,7 +36,7 @@ class SimpleModel2(Model):
         self._hidden_sizes = hidden_sizes
 
     # pylint: disable=arguments-differ
-    def _build(self, obs_input, name=None):
+    def _build_model(self, obs_input, name=None):
         del name
         action = mlp(obs_input, self._output_dim, self._hidden_sizes, 'state')
         return action
@@ -55,10 +55,10 @@ class ComplicatedModel(Model):
         return ['action']
 
     # pylint: disable=arguments-differ
-    def _build(self, obs_input, name=None):
+    def _build_model(self, obs_input, name=None):
         del name
-        h1, _ = self._simple_model_1.build(obs_input).outputs
-        return self._simple_model_2.build(h1).outputs
+        h1, _ = self._simple_model_1.build_network(obs_input).outputs
+        return self._simple_model_2.build_network(h1).outputs
 
 
 # This model takes another model as constructor argument
@@ -74,10 +74,10 @@ class ComplicatedModel2(Model):
         return ['action']
 
     # pylint: disable=arguments-differ
-    def _build(self, obs_input, name=None):
+    def _build_model(self, obs_input, name=None):
         del name
-        h1, _ = self._parent_model.build(obs_input).outputs
-        return self._output_model.build(h1).outputs
+        h1, _ = self._parent_model.build_network(obs_input).outputs
+        return self._output_model.build_network(h1).outputs
 
 
 class TestModel(TfGraphTestCase):
@@ -85,7 +85,7 @@ class TestModel(TfGraphTestCase):
     def test_model_creation(self):
         input_var = tf.compat.v1.placeholder(tf.float32, shape=(None, 5))
         model = SimpleModel(output_dim=2)
-        outputs = model.build(input_var).outputs
+        outputs = model.build_network(input_var).outputs
         data = np.ones((3, 5))
         out, model_out = self.sess.run(
             [outputs, model._networks['default'].outputs],
@@ -96,7 +96,7 @@ class TestModel(TfGraphTestCase):
     def test_model_creation_with_custom_name(self):
         input_var = tf.compat.v1.placeholder(tf.float32, shape=(None, 5))
         model = SimpleModel(output_dim=2, name='MySimpleModel')
-        outputs = model.build(input_var, name='network_2').outputs
+        outputs = model.build_network(input_var, name='network_2').outputs
         data = np.ones((3, 5))
         result, result2 = self.sess.run(
             [outputs, model._networks['network_2'].outputs],
@@ -109,21 +109,22 @@ class TestModel(TfGraphTestCase):
         another_input_var = tf.compat.v1.placeholder(tf.float32,
                                                      shape=(None, 5))
         model = SimpleModel(output_dim=2)
-        model.build(input_var)
+        model.build_network(input_var)
         with pytest.raises(ValueError):
-            model.build(another_input_var)
+            model.build_network(another_input_var)
 
         model2 = SimpleModel(output_dim=2)
         with pytest.raises(ValueError):
-            model2.build(another_input_var)
+            model2.build_network(another_input_var)
 
     def test_model_with_different_name(self):
         input_var = tf.compat.v1.placeholder(tf.float32, shape=(None, 5))
         another_input_var = tf.compat.v1.placeholder(tf.float32,
                                                      shape=(None, 5))
         model = SimpleModel(output_dim=2)
-        outputs_1 = model.build(input_var).outputs
-        outputs_2 = model.build(another_input_var, name='network_2').outputs
+        outputs_1 = model.build_network(input_var).outputs
+        outputs_2 = model.build_network(another_input_var,
+                                        name='network_2').outputs
         data = np.ones((3, 5))
         results_1, results_2 = self.sess.run([outputs_1, outputs_2],
                                              feed_dict={
@@ -137,8 +138,8 @@ class TestModel(TfGraphTestCase):
         another_input_var = tf.compat.v1.placeholder(tf.float32,
                                                      shape=(None, 5))
         model = SimpleModel(output_dim=2)
-        outputs_1 = model.build(input_var, name='network_1').outputs
-        outputs_2 = model.build(another_input_var).outputs
+        outputs_1 = model.build_network(input_var, name='network_1').outputs
+        outputs_2 = model.build_network(another_input_var).outputs
         data = np.ones((3, 5))
         results_1, results_2 = self.sess.run([outputs_1, outputs_2],
                                              feed_dict={
@@ -150,7 +151,7 @@ class TestModel(TfGraphTestCase):
     def test_model_in_model(self):
         input_var = tf.compat.v1.placeholder(tf.float32, shape=(None, 5))
         model = ComplicatedModel(output_dim=2)
-        outputs = model.build(input_var).outputs
+        outputs = model.build_network(input_var).outputs
         data = np.ones((3, 5))
         out, model_out = self.sess.run(
             [outputs, model._networks['default'].outputs],
@@ -162,7 +163,7 @@ class TestModel(TfGraphTestCase):
         input_var = tf.compat.v1.placeholder(tf.float32, shape=(None, 5))
         parent_model = SimpleModel(output_dim=4)
         model = ComplicatedModel2(parent_model=parent_model, output_dim=2)
-        outputs = model.build(input_var).outputs
+        outputs = model.build_network(input_var).outputs
         data = np.ones((3, 5))
         out, model_out = self.sess.run(
             [outputs, model._networks['default'].outputs],
@@ -176,7 +177,7 @@ class TestModel(TfGraphTestCase):
 
         with tf.compat.v1.Session(graph=tf.Graph()) as sess:
             input_var = tf.compat.v1.placeholder(tf.float32, shape=(None, 5))
-            model.build(input_var)
+            model.build_network(input_var)
 
             # assign bias to all one
             with tf.compat.v1.variable_scope('SimpleModel/state', reuse=True):
@@ -191,7 +192,7 @@ class TestModel(TfGraphTestCase):
         with tf.compat.v1.Session(graph=tf.Graph()) as sess:
             input_var = tf.compat.v1.placeholder(tf.float32, shape=(None, 5))
             model_pickled = pickle.loads(model_data)
-            outputs = model_pickled.build(input_var).outputs
+            outputs = model_pickled.build_network(input_var).outputs
 
             results2 = sess.run(outputs, feed_dict={input_var: data})
 
@@ -211,7 +212,7 @@ class TestModel(TfGraphTestCase):
 
         with tf.compat.v1.Session(graph=tf.Graph()) as sess:
             input_var = tf.compat.v1.placeholder(tf.float32, shape=(None, 5))
-            outputs = model.build(input_var).outputs
+            outputs = model.build_network(input_var).outputs
 
             # assign bias to all one
             with tf.compat.v1.variable_scope(
@@ -226,7 +227,7 @@ class TestModel(TfGraphTestCase):
         with tf.compat.v1.Session(graph=tf.Graph()) as sess:
             input_var = tf.compat.v1.placeholder(tf.float32, shape=(None, 5))
             model_pickled = pickle.loads(model_data)
-            model_pickled.build(input_var)
+            model_pickled.build_network(input_var)
 
             results2 = sess.run(model_pickled._networks['default'].outputs,
                                 feed_dict={input_var: data})
@@ -241,7 +242,7 @@ class TestModel(TfGraphTestCase):
 
         with tf.compat.v1.Session(graph=tf.Graph()) as sess:
             input_var = tf.compat.v1.placeholder(tf.float32, shape=(None, 5))
-            outputs = model.build(input_var).outputs
+            outputs = model.build_network(input_var).outputs
 
             # assign bias to all one
             with tf.compat.v1.variable_scope(
@@ -256,7 +257,7 @@ class TestModel(TfGraphTestCase):
         with tf.compat.v1.Session(graph=tf.Graph()) as sess:
             input_var = tf.compat.v1.placeholder(tf.float32, shape=(None, 5))
             model_pickled = pickle.loads(model_data)
-            model_pickled.build(input_var)
+            model_pickled.build_network(input_var)
 
             results2 = sess.run(model_pickled._networks['default'].outputs,
                                 feed_dict={input_var: data})
@@ -269,7 +270,7 @@ class TestModel(TfGraphTestCase):
         with tf.compat.v1.Session(graph=tf.Graph()):
             state = tf.compat.v1.placeholder(shape=[None, 10, 5],
                                              dtype=tf.float32)
-            model.build(state)
+            model.build_network(state)
 
             model.parameters = {
                 k: np.zeros_like(v)
@@ -283,7 +284,7 @@ class TestModel(TfGraphTestCase):
             model_pickled = pickle.loads(h_data)
             state = tf.compat.v1.placeholder(shape=[None, 10, 5],
                                              dtype=tf.float32)
-            model_pickled.build(state)
+            model_pickled.build_network(state)
 
             np.testing.assert_equal(all_one, model_pickled.parameters)
 
@@ -293,7 +294,7 @@ class TestModel(TfGraphTestCase):
         with tf.compat.v1.Session(graph=tf.Graph()):
             state = tf.compat.v1.placeholder(shape=[None, 10, 5],
                                              dtype=tf.float32)
-            model.build(state)
+            model.build_network(state)
 
             model.parameters = {
                 k: np.zeros_like(v)
@@ -311,14 +312,14 @@ class TestModel(TfGraphTestCase):
             del model_pickled._default_parameters[
                 'SimpleModel/state/hidden_0/kernel:0']
             with pytest.warns(UserWarning):
-                model_pickled.build(state)
+                model_pickled.build_network(state)
 
     def test_model_set_parameters(self):
         model1 = SimpleModel(output_dim=2, name='model1')
         model2 = SimpleModel(output_dim=2, name='model2')
         input_var = tf.compat.v1.placeholder(tf.float32, shape=(None, 5))
-        model1.build(input_var)
-        model2.build(input_var)
+        model1.build_network(input_var)
+        model2.build_network(input_var)
         model1.parameters = model2.parameters
         for m1, m2 in zip(model1.parameters.values(),
                           model2.parameters.values()):

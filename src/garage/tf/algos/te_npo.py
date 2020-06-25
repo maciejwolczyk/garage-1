@@ -128,7 +128,7 @@ class TENPO(RLAlgorithm):
         self._name = name
         self._name_scope = tf.name_scope(self._name)
         self._old_policy = policy.clone('old_policy')
-        self._old_policy.model.parameters = self.policy.model.parameters
+        self._old_policy.parameters = self.policy.parameters
         self._old_policy.encoder.model.parameters = (
             self.policy.encoder.model.parameters)
         self._use_softplus_entropy = use_softplus_entropy
@@ -273,7 +273,7 @@ class TENPO(RLAlgorithm):
         logger.log('Fitting baseline...')
         self._baseline.fit(paths)
 
-        self._old_policy.model.parameters = self.policy.model.parameters
+        self._old_policy.parameters = self.policy.parameters
         self._old_policy.encoder.model.parameters = (
             self.policy.encoder.model.parameters)
         self._old_inference.model.parameters = self._inference.model.parameters

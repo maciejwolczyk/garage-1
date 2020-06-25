@@ -23,7 +23,7 @@ class Sequential(Model):
         self._last_network = None
 
     # pylint: disable=arguments-differ
-    def _build(self, input_var, name=None):
+    def _build_model(self, input_var, name=None):
         """Build model given input placeholder(s).
 
         Args:
@@ -37,7 +37,7 @@ class Sequential(Model):
         """
         out = input_var
         for model in self._models:
-            self._last_network = model.build(out, name=name)
+            self._last_network = model.build_network(out, name=name)
             if self._first_network is None:
                 self._first_network = self._last_network
             out = self._last_network.outputs

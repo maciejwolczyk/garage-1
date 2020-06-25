@@ -157,7 +157,7 @@ class GaussianMLPModel(Model):
         return ['dist', 'mean', 'log_std']
 
     # pylint: disable=arguments-differ
-    def _build(self, state_input, name=None):
+    def _build_model(self, state_input, name=None):
         """Build model.
 
         Args:

@@ -47,7 +47,7 @@ class TestGaussianCNNModel(TfGraphTestCase):
                                  std_parameterization='exp',
                                  hidden_w_init=tf.constant_initializer(0.01),
                                  output_w_init=tf.constant_initializer(1))
-        outputs = model.build(self._input_ph).outputs
+        outputs = model.build_network(self._input_ph).outputs
 
         action, mean, log_std, std_param = self.sess.run(
             outputs[:-1], feed_dict={self._input_ph: self.obs})
@@ -99,7 +99,7 @@ class TestGaussianCNNModel(TfGraphTestCase):
                                  hidden_sizes=hidden_sizes,
                                  output_dim=output_dim,
                                  std_share_network=True)
-        model.build(self._input_ph)
+        model.build_network(self._input_ph)
         with tf.compat.v1.variable_scope(model.name, reuse=True):
             std_share_output_weights = tf.compat.v1.get_variable(
                 'dist_params/mean_std_network/output/kernel')
@@ -135,7 +135,7 @@ class TestGaussianCNNModel(TfGraphTestCase):
                                  std_parameterization='exp',
                                  hidden_w_init=tf.constant_initializer(0.01),
                                  output_w_init=tf.constant_initializer(1))
-        outputs = model.build(self._input_ph).outputs
+        outputs = model.build_network(self._input_ph).outputs
 
         action, mean, log_std, std_param = self.sess.run(
             outputs[:-1], feed_dict={self._input_ph: self.obs})
@@ -187,7 +187,7 @@ class TestGaussianCNNModel(TfGraphTestCase):
                                  output_dim=output_dim,
                                  std_share_network=False,
                                  adaptive_std=False)
-        model.build(self._input_ph)
+        model.build_network(self._input_ph)
         with tf.compat.v1.variable_scope(model.name, reuse=True):
             mean_output_weights = tf.compat.v1.get_variable(
                 'dist_params/mean_network/output/kernel')
@@ -231,7 +231,7 @@ class TestGaussianCNNModel(TfGraphTestCase):
             output_w_init=tf.constant_initializer(1),
             std_hidden_w_init=tf.constant_initializer(0.01),
             std_output_w_init=tf.constant_initializer(1))
-        outputs = model.build(self._input_ph).outputs
+        outputs = model.build_network(self._input_ph).outputs
 
         action, mean, log_std, std_param = self.sess.run(
             outputs[:-1], feed_dict={self._input_ph: self.obs})
@@ -297,7 +297,7 @@ class TestGaussianCNNModel(TfGraphTestCase):
             std_hidden_w_init=tf.constant_initializer(0.01),
             std_output_w_init=tf.constant_initializer(1))
 
-        model.build(self._input_ph)
+        model.build_network(self._input_ph)
         with tf.compat.v1.variable_scope(model.name, reuse=True):
             mean_output_weights = tf.compat.v1.get_variable(
                 'dist_params/mean_network/output/kernel')
@@ -328,7 +328,7 @@ class TestGaussianCNNModel(TfGraphTestCase):
                                  hidden_sizes=hidden_sizes,
                                  output_dim=output_dim,
                                  std_share_network=True)
-        outputs = model.build(input_var).outputs
+        outputs = model.build_network(input_var).outputs
 
         # get output bias
         with tf.compat.v1.variable_scope('GaussianCNNModel', reuse=True):
@@ -344,7 +344,7 @@ class TestGaussianCNNModel(TfGraphTestCase):
             input_var = tf.compat.v1.placeholder(tf.float32,
                                                  shape=(None, 10, 10, 3))
             model_pickled = pickle.loads(h)
-            outputs = model_pickled.build(input_var).outputs
+            outputs = model_pickled.build_network(input_var).outputs
             output2 = sess.run(outputs[:-1], feed_dict={input_var: self.obs})
 
             assert np.array_equal(output1, output2)
@@ -365,7 +365,7 @@ class TestGaussianCNNModel(TfGraphTestCase):
                                  output_dim=output_dim,
                                  std_share_network=False,
                                  adaptive_std=False)
-        outputs = model.build(input_var).outputs
+        outputs = model.build_network(input_var).outputs
 
         # get output bias
         with tf.compat.v1.variable_scope('GaussianCNNModel', reuse=True):
@@ -381,7 +381,7 @@ class TestGaussianCNNModel(TfGraphTestCase):
             input_var = tf.compat.v1.placeholder(tf.float32,
                                                  shape=(None, 10, 10, 3))
             model_pickled = pickle.loads(h)
-            outputs = model_pickled.build(input_var).outputs
+            outputs = model_pickled.build_network(input_var).outputs
             output2 = sess.run(outputs[:-1], feed_dict={input_var: self.obs})
             assert np.array_equal(output1, output2)
 
@@ -412,7 +412,7 @@ class TestGaussianCNNModel(TfGraphTestCase):
                                  output_w_init=tf.constant_initializer(1),
                                  std_hidden_w_init=tf.constant_initializer(1),
                                  std_output_w_init=tf.constant_initializer(1))
-        outputs = model.build(input_var).outputs
+        outputs = model.build_network(input_var).outputs
 
         # get output bias
         with tf.compat.v1.variable_scope('GaussianCNNModel', reuse=True):
@@ -427,7 +427,7 @@ class TestGaussianCNNModel(TfGraphTestCase):
             input_var = tf.compat.v1.placeholder(tf.float32,
                                                  shape=(None, 10, 10, 3))
             model_pickled = pickle.loads(h)
-            outputs = model_pickled.build(input_var).outputs
+            outputs = model_pickled.build_network(input_var).outputs
             output2 = sess.run(outputs[:-1], feed_dict={input_var: self.obs})
             assert np.array_equal(output1, output2)
 
@@ -454,7 +454,7 @@ class TestGaussianCNNModel(TfGraphTestCase):
                                  std_parameterization='softplus',
                                  hidden_w_init=tf.constant_initializer(0.01),
                                  output_w_init=tf.constant_initializer(1))
-        outputs = model.build(self._input_ph).outputs
+        outputs = model.build_network(self._input_ph).outputs
 
         action, mean, log_std, std_param = self.sess.run(
             outputs[:-1], feed_dict={self._input_ph: self.obs})
@@ -511,7 +511,7 @@ class TestGaussianCNNModel(TfGraphTestCase):
                                  min_std=10,
                                  hidden_w_init=tf.constant_initializer(0.01),
                                  output_w_init=tf.constant_initializer(1))
-        outputs = model.build(self._input_ph).outputs
+        outputs = model.build_network(self._input_ph).outputs
         _, _, log_std, std_param = self.sess.run(
             outputs[:-1], feed_dict={self._input_ph: self.obs})
 
@@ -540,7 +540,7 @@ class TestGaussianCNNModel(TfGraphTestCase):
                                  max_std=1.0,
                                  hidden_w_init=tf.constant_initializer(0.01),
                                  output_w_init=tf.constant_initializer(1))
-        outputs = model.build(self._input_ph).outputs
+        outputs = model.build_network(self._input_ph).outputs
         _, _, log_std, std_param = self.sess.run(
             outputs[:-1], feed_dict={self._input_ph: self.obs})
 
@@ -569,7 +569,7 @@ class TestGaussianCNNModel(TfGraphTestCase):
                                  min_std=10,
                                  hidden_w_init=tf.constant_initializer(0.1),
                                  output_w_init=tf.constant_initializer(1))
-        outputs = model.build(self._input_ph).outputs
+        outputs = model.build_network(self._input_ph).outputs
         _, _, log_std, std_param = self.sess.run(
             outputs[:-1], feed_dict={self._input_ph: self.obs})
 
@@ -599,7 +599,7 @@ class TestGaussianCNNModel(TfGraphTestCase):
                                  max_std=1.0,
                                  hidden_w_init=tf.constant_initializer(0.1),
                                  output_w_init=tf.constant_initializer(1))
-        outputs = model.build(self._input_ph).outputs
+        outputs = model.build_network(self._input_ph).outputs
         _, _, log_std, std_param = self.sess.run(
             outputs[:-1], feed_dict={self._input_ph: self.obs})
 

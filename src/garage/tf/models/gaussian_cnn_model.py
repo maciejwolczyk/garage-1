@@ -179,7 +179,7 @@ class GaussianCNNModel(Model):
         return ['sample', 'mean', 'log_std', 'std_param', 'dist']
 
     # pylint: disable=arguments-differ
-    def _build(self, state_input, name=None):
+    def _build_model(self, state_input, name=None):
         """Build model given input placeholder(s).
 
         Args:

@@ -148,7 +148,7 @@ class GaussianGRUModel(Model):
         ]
 
     # pylint: disable=arguments-differ
-    def _build(self, state_input, step_input, step_hidden, name=None):
+    def _build_model(self, state_input, step_input, step_hidden, name=None):
         """Build model.
 
         Args:

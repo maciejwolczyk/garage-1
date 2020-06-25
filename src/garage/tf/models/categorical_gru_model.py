@@ -93,7 +93,7 @@ class CategoricalGRUModel(GRUModel):
         return ['dist', 'step_output', 'step_hidden', 'init_hidden']
 
     # pylint: disable=arguments-differ
-    def _build(self, state_input, step_input, step_hidden, name=None):
+    def _build_model(self, state_input, step_input, step_hidden, name=None):
         """Build model.
 
         Args:
@@ -115,7 +115,7 @@ class CategoricalGRUModel(GRUModel):
                 when policy resets. Shape: :math:`(S^*)`.
 
         """
-        outputs, step_output, step_hidden, init_hidden = super()._build(
+        outputs, step_output, step_hidden, init_hidden = super()._build_model(
             state_input, step_input, step_hidden, name=name)
         if self._output_normalization_fn:
             outputs = self._output_normalization_fn(outputs)

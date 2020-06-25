@@ -173,7 +173,7 @@ class DiscreteCNNQFunction(QFunction):
 
         with tf.compat.v1.variable_scope(self.name) as vs:
             self._variable_scope = vs
-            self._network = self.model.build(augmented_obs_ph)
+            self._network = self.model.build_network(augmented_obs_ph)
 
         self._obs_input = obs_ph
 
@@ -214,7 +214,8 @@ class DiscreteCNNQFunction(QFunction):
             if isinstance(self._env_spec.observation_space, akro.Image):
                 augmented_state_input = tf.cast(state_input,
                                                 tf.float32) / 255.0
-            return self.model.build(augmented_state_input, name=name).outputs
+            return self.model.build_network(augmented_state_input,
+                                            name=name).outputs
 
     def clone(self, name):
         """Return a clone of the Q-function.
